@@ -1,57 +1,81 @@
 <?php
      include_once("functions.php");
-     
-     $relatieid = $_GET['RID'];
-     
-     $filtered = 0;
-     $filter = "relaties.ID = " . $relatieid . " AND (StatusCode < 100)";
-     $datum = "";
-     $bod = "";
-     $zoek = "";
-     if (isset($_GET['Datum']) && !empty($_GET['Datum']))
-     {    $datum = $_GET['Datum'];
-          $filtered = 1;
-     };
-     if (isset($_GET['Bod']) && !empty($_GET['Bod']))
-     {    $bod = $_GET['Bod'];
-          $filtered = 1;
-     };
-     if (isset($_GET['Zoek']) && !empty($_GET['Zoek']))
-     {    $zoek = $_GET['Zoek'];
-          $filtered = 1;
-     };
-     
-     if (!empty($datum))
-     {    $filter .= " AND StartDatum > '" . $datum . "'";
-     };
-     
-     if (!empty($bod))
-     {    $filter .= " AND Bod > " . $bod;
-     };
-     
-     if (!empty($zoek) && strpos($zoek, "'") === false)
-     {    $filter .= " AND CONCAT_WS('', StartDatum, Datum, Bod, Status, Straat, Postcode, Plaats) LIKE '%" . $zoek . "%'";
-     };
-     
-     $db = ConnectDB();
-     
-     $sql = "   SELECT biedingen.ID as TKID,
-                       StartDatum,
-                       IF(Bod, Datum, '&nbsp;') AS Datum,
-                       CONCAT('&euro; ', Bod) AS Bod,
-                       Straat,
-                       CONCAT(LEFT(Postcode, 4), ' ', RIGHT(Postcode, 2), ', ', Plaats) as Plaats,
-                       Status, 
-                       biedingen.FKhuizenID AS HID,
-                       huizen.FKRelatiesID as RID
-                  FROM biedingen
-             LEFT JOIN relaties ON relaties.ID = biedingen.FKRelatiesID 
-             LEFT JOIN huizen on huizen.ID = biedingen.FKhuizenID
-             LEFT JOIN statussen ON statussen.ID = biedingen.FKstatussenID
-                 WHERE " . $filter . "
-             ORDER BY Datum";
-             
-     $kopen = $db->query($sql)->fetchAll();
+
+    $relatieid = $_GET['RID'];
+
+
+    $relatieid = filter_var($relatieid, FILTER_VALIDATE_INT);
+
+
+    $filtered = 0;
+    $filter = "relaties.ID = :relatieid AND (StatusCode < 100)";
+    $datum = "";
+    $bod = "";
+    $zoek = "";
+
+    if (isset($_GET['Datum']) && !empty($_GET['Datum'])) {
+        $datum = $_GET['Datum'];
+        $filtered = 1;
+    }
+
+    if (isset($_GET['Bod']) && !empty($_GET['Bod'])) {
+        $bod = $_GET['Bod'];
+        $filtered = 1;
+    }
+
+    if (isset($_GET['Zoek']) && !empty($_GET['Zoek'])) {
+        $zoek = $_GET['Zoek'];
+        $filtered = 1;
+    }
+
+    if (!empty($datum)) {
+        $filter .= " AND StartDatum > :datum";
+    }
+
+    if (!empty($bod)) {
+        $filter .= " AND Bod > :bod";
+    }
+
+    if (!empty($zoek) && strpos($zoek, "'") === false) {
+        $filter .= " AND CONCAT_WS('', StartDatum, Datum, Bod, Status, Straat, Postcode, Plaats) LIKE :zoek";
+    }
+
+    $db = ConnectDB();
+
+    $sql = "SELECT biedingen.ID as TKID,
+                           StartDatum,
+                           IF(Bod, Datum, '&nbsp;') AS Datum,
+                           CONCAT('&euro; ', Bod) AS Bod,
+                           Straat,
+                           CONCAT(LEFT(Postcode, 4), ' ', RIGHT(Postcode, 2), ', ', Plaats) as Plaats,
+                           Status, 
+                           biedingen.FKhuizenID AS HID,
+                           huizen.FKRelatiesID as RID
+                      FROM biedingen
+                 LEFT JOIN relaties ON relaties.ID = biedingen.FKRelatiesID 
+                 LEFT JOIN huizen on huizen.ID = biedingen.FKhuizenID
+                 LEFT JOIN statussen ON statussen.ID = biedingen.FKstatussenID
+                     WHERE " . $filter . "
+                 ORDER BY Datum";
+
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindParam(':relatieid', $relatieid, PDO::PARAM_INT);
+
+    if (!empty($datum)) {
+        $stmt->bindParam(':datum', $datum, PDO::PARAM_STR);
+    }
+
+    if (!empty($bod)) {
+        $stmt->bindParam(':bod', $bod, PDO::PARAM_INT);
+    }
+
+    if (!empty($zoek) && strpos($zoek, "'") === false) {
+        $stmt->bindParam(':zoek', '%' . $zoek . '%', PDO::PARAM_STR);
+    }
+
+    $stmt->execute();
+    $kopen = $stmt->fetchAll();
      
      $sql = "   SELECT huizen.ID as HID,
                        StartDatum,
