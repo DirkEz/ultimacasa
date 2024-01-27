@@ -131,6 +131,25 @@
                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
                <link rel="stylesheet" type="text/css" href="ucstyle.css?' . mt_rand() . '">
+               <script>
+                    // Function to show alert when leaving the tab
+                    function showLeaveAlert() {
+                        return confirm("Weet je zeker dat je deze pagina wilt verlaten? Niet-opgeslagen wijzigingen gaan verloren.");
+                    }
+        
+                    // Add event listener to show alert when leaving the tab
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var tabLinks = document.querySelectorAll(".nav-tabs a[data-toggle=\'tab\']");
+                        tabLinks.forEach(function (link) {
+                            link.addEventListener("click", function (event) {
+                                // Check if the user is leaving the active tab
+                                if (!event.target.parentElement.classList.contains("active") && !showLeaveAlert()) {
+                                    event.preventDefault(); // Cancel the tab change
+                                }
+                            });
+                        });
+                    });
+                </script>
           </head>
           <body>
                <div class="container">' .
