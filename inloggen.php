@@ -19,9 +19,12 @@
      
      $redirect_url = 'index.php?NOAccount';
      if ($inlog)
-     {    $redirect_url = $inlog['Landingspagina'] . '?RID=' . $inlog['RID'];
+     {
+         $_SESSION["User_Id"] = $inlog['RID'];
+         $_SESSION["User_Rollen"] = $inlog['rollen'];
+         $redirect_url = $inlog['Landingspagina'] . '?RID=' . $inlog['RID'];
      }
      
      echo '<META HTTP-EQUIV=REFRESH CONTENT="1; '. $redirect_url . '">';
-     
+
 ?>

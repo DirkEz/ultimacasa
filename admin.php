@@ -13,7 +13,10 @@
                  WHERE ID = " . $relatieid;
      
      $gegevens = $db->query($sql)->fetch();
-     
+
+
+     if($relatieid["FKrollenID"] == $_SESSION['User_Rollen'])
+     {
      echo 
     '<!DOCTYPE html>
      <html lang="nl">
@@ -301,4 +304,7 @@
                </div>
           </body>
      </html>';
+     }else{
+        header('Location:inloggen.php');
+     }
 ?>

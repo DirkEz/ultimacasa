@@ -1,7 +1,9 @@
 <?php
      include_once("functions.php");
-     
-     echo '
+    $passwordMinLength = 5;
+    $passwordPattern = '/^(?=.*[A-Z])(?=.*\d).{' . $passwordMinLength . ',}$/';
+
+echo '
 <!DOCTYPE html>
 <html lang="nl">
      <head>
@@ -38,7 +40,9 @@
                                         </div>
                                         <div class="form-group">
                                              <label for="Wachtwoord">Wachtwoord:</label>
-                                             <input type="password" class="form-control" id="Wachtwoord" name="Wachtwoord" placeholder="Wachtwoord" required>
+                                             <input type="password" class="form-control" id="Wachtwoord" name="Wachtwoord" placeholder="Wachtwoord" required
+                                             pattern="' . htmlspecialchars($passwordPattern) . '" 
+                                             title="Wachtwoord moet minimaal ' . $passwordMinLength . ' tekens lang zijn en minstens 1 hoofdletter en 1 cijfer bevatten">
                                         </div>
                                         <div class="form-group">
                                              <label for="Telefoon">Mobiel telefoonnummer:</label>

@@ -29,7 +29,7 @@
      {    $filter .= " AND Bod > " . $bod;
      };
      
-     if (!empty($zoek))
+     if (!empty($zoek) && strpos($zoek, "'") === false)
      {    $filter .= " AND CONCAT_WS('', StartDatum, Datum, Bod, Status, Straat, Postcode, Plaats) LIKE '%" . $zoek . "%'";
      };
      

@@ -1,7 +1,7 @@
 <?php
 
 include_once("DBUC.php");
-
+session_start();
 $telefoonpattern = "^(?:0|\(?\+31\)?\s?|0031\s?)[1-79](?:[\.\-\s]?\d\d){4}$";
 
 $emailpattern = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|" . '"' . 
