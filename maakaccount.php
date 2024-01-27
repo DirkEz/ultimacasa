@@ -50,6 +50,10 @@ echo '
                                                     placeholder="Telefoonnummer" 
                                                     pattern="' . $telefoonpattern . '" required>
                                         </div>
+                                         <div class="form-group">
+                                             <input type="checkbox" id="Consent" name="Consent" required>
+                                             <label for="Consent">Ik geef toestemming om mijn gegevens op te slaan.</label>
+                                        </div>
                                         <div class="form-group"><br><br>
                                              <button type="submit" class="action-button" title="Uw account aanmaken">Maak account</button>
                                              <button class="action-button"><a href="index.html" >Annuleren</a></button>
